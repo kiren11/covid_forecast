@@ -1,7 +1,8 @@
 library(lubridate)
 library(dplyr)
 library(gbm)
-setwd("F:/Grad School/Epidemics/covid_forecast/") #change this to your directory
+library(plotrix)
+setwd("C:/Users/kaurk/Documents/covid_forecast-main/") 
 today = ymd("2020-10-29") #change this to today's date
 
 #getting data
@@ -26,6 +27,18 @@ covid_deaths_agg = covid_death_report %>%
 bedvent_agg = bedvent_report %>% 
   group_by(date) %>%
   summarize(beds = sum(BEDS_ICU_OCCUPIED_COVID_19), vents = sum(VENTS_ALL_USE_COVID_19))
+
+# sum of covid cases per week
+casesweekly <- ts(covid_agg[-1], frequency = 52)
+
+# sum of covid cases per month
+casesmonthly <- ts(covid_agg[-1], frequency = 12)
+
+#sum of covid deaths per week
+deathsweekly <-ts(covid_deaths_agg[-1], frequency = 52)
+
+# sum of covid deaths per month
+deathsmonthly <- ts(covid_agg[-1], frequency = 12)
 
 #mutating data frames
 covid_agg<-arrange(covid_agg,date,cases) %>% 
@@ -71,6 +84,39 @@ bedvent_agg<-arrange(bedvent_agg,date,beds) %>%
 data_merge=merge(covid_agg,covid_deaths_agg,by="date",all.x=T)
 data_merge=merge(data_merge,bedvent_agg,by="date",all.x=T)
 data_merge$deaths[is.na(data_merge$deaths)] <- 0
+
+
+#features
+
+# f1 - number of covid virus ICU beds occupied - # of covid ventilators used
+covidbedsminusvent<-arrange(bedvent_agg, date, beds, vents) %>%
+  mutate(bedminusvent=lag(beds - vents),
+         bedminusvent2=lag(beds - vents,2),
+         bedminusvent3=lag(beds - vents,3),
+         bedminusvent4=lag(beds - vents,4),
+         bedminusvent5=lag(beds - vents,5),
+         bedminusvent6=lag(beds - vents,6),
+         bedminusvent7=lag(beds - vents,7),
+         bedminusvent_rolling_avg=(bedminusvent+bedminusvent2+bedminusvent3+bedminusvent4+bedminusvent5+bedminusvent6+bedminusvent7)/7)
+
+# f2 - monthly covid rolling average
+covidmonthly<-arrange(covid_agg,date,cases) %>% 
+  mutate(lag1=lag(cases), lag2=lag(cases,2), lag3=lag(cases,3), lag4=lag(cases,4), lag5=lag(cases,5),
+         lag6=lag(cases,6), lag7=lag(cases,7), lag8=lag(cases,8), lag9=lag(cases,9), lag10=lag(cases,10),
+         lag11=lag(cases,11), lag12=lag(cases,12), lag13=lag(cases,13), lag14=lag(cases,14), lag15=lag(cases,15),
+         lag16=lag(cases,16), lag17=lag(cases,17), lag18=lag(cases,18), lag19=lag(cases,19), lag20=lag(cases,20),
+         lag21=lag(cases,21), lag22=lag(cases,22), lag23=lag(cases,23), lag24=lag(cases,24), lag25=lag(cases,25),
+         lag26=lag(cases,26), lag27=lag(cases,27), lag28=lag(cases,28), lag29=lag(cases,29), lag30=lag(cases,30),
+         covidmonthly_rollingavg=(lag1+lag2+lag3+lag4+lag5+lag6+lag7+lag8+lag9+lag10+lag11+lag12+lag13+lag14+lag15+lag16+lag17+lag18+
+                      lag19+lag20+lag21+lag22+lag23+lag24+lag25+lag26+lag27+lag28+lag29+lag30)/30)
+
+# f3 - tally of total covid cases per county (need to make this into rolling average)
+countycases <- covid_report %>% group_by(COUNTY_NAME) %>% tally()
+print(countycases)
+
+# f4 - tally of total covid cases per age group (need to make this into rolling average)
+agecases <- covid_report %>% group_by(AGEGRP) %>% tally()
+print(agecases)
 
 #predicting day-by-day
 for(i in 1:8) {
@@ -137,4 +183,14 @@ for(i in 1:8) {
 print(tail(data_merge, 20))
 plot(data_merge$cases, type="o")
 
+#standard error of aggregate covid data
+# std.error(covid_agg)
+# 
+# #standard error of aggregate covid death data
+# std.error(covid_deaths_agg)
+# 
+# #standard error of aggregate covid bed ventilator data
+# std.error(bedvent_agg)
 
+#summary of the model
+summary(future)
