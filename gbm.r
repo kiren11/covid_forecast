@@ -3,8 +3,8 @@ library(dplyr)
 library(gbm)
 library(plotrix)
 setwd("F:/Grad School/Epidemics/covid_forecast/") 
-today = ymd("2020-10-29") #change this to today's date
-trees = 2000
+today = ymd("2020-11-01") #change this to today's date
+trees = 3000
 
 #getting data
 covid_report=read.csv("covid_report.csv", fileEncoding="UTF-8-BOM")
@@ -214,8 +214,16 @@ for(i in 1:7) {
   data_merge = rbind(data_merge, future)
 }
 
-print(tail(data_merge, 7))
+print(tail(data_merge, 10))
 plot(data_merge$cases, type="o")
 
 #summary of the model
 #summary(cases_model)
+
+lastval = nrow(data_merge)
+
+# predicted data points (before confidence interval)
+print(sum(data_merge$cases[(lastval-6):lastval]))
+print(sum(data_merge$deaths[(lastval-6):lastval]))
+print(max(data_merge$beds[(lastval-6):lastval]))
+print(max(data_merge$vents[(lastval-6):lastval]))
