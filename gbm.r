@@ -3,7 +3,7 @@ library(dplyr)
 library(gbm)
 library(plotrix)
 setwd("F:/Grad School/Epidemics/covid_forecast/") 
-today = ymd("2020-11-01") #change this to today's date
+today = ymd("2020-11-07") #change this to today's date
 trees = 3000
 
 #getting data
@@ -119,7 +119,7 @@ data_merge[is.na(data_merge)] <- 0
 for(i in 1:7) {
   date = today + days(i)
   print(date)
-  cases_model=gbm(cases~lag1+lag2+lag3+lag4+lag5+lag6+lag7+lag14+rolling_avg+deaths_rolling_avg+bedminusvent_rolling_avg+monthly_rolling_avg, data=data_merge, n.trees=trees)
+  cases_model=gbm(cases~lag1+lag2+lag3+lag4+lag5+lag6+lag7+lag14+rolling_avg+monthly_rolling_avg, data=data_merge, n.trees=trees)
   deaths_model=gbm(deaths~deaths_lag1+deaths_lag2+deaths_lag3+deaths_lag4+rolling_avg+deaths_rolling_avg+bedminusvent_rolling_avg, data=data_merge, n.trees=trees)
   beds_model=gbm(beds~beds_lag1+beds_lag2+beds_lag3+beds_lag4+beds_rolling_avg+rolling_avg+deaths_rolling_avg+bedminusvent_rolling_avg, data=data_merge, n.trees=trees)
   vents_model=gbm(vents~vents_lag1+vents_lag2+vents_lag3+vents_lag4+vents_rolling_avg+rolling_avg+deaths_rolling_avg+bedminusvent_rolling_avg, data=data_merge, n.trees=trees)
