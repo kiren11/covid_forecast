@@ -6,8 +6,9 @@ library(flexdashboard)
 library(shiny)
 library(ggplotify)
 library(shinydashboard)
+library(rsconnect)
 
-setwd("C:/Users/kaurk/Documents/covid_forecast-main/") 
+#setwd("C:/Users/kaurk/Documents/covid_forecast-main/") 
 today = ymd("2020-11-01") #change this to today's date
 trees = 3000
 
