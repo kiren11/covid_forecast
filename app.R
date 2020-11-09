@@ -5,6 +5,7 @@ library(plotrix)
 library(flexdashboard)
 library(shiny)
 library(ggplotify)
+library(shinydashboard)
 
 setwd("C:/Users/kaurk/Documents/covid_forecast-main/") 
 today = ymd("2020-11-01") #change this to today's date
@@ -69,7 +70,7 @@ covid_agg<-arrange(covid_agg,date,cases) %>%
          lag30=lag(cases,30),
          rolling_avg=(lag1+lag2+lag3+lag4+lag5+lag6+lag7)/7,
          monthly_rolling_avg=(lag1+lag2+lag3+lag4+lag5+lag6+lag7+lag8+lag9+lag10+lag11+lag12+lag13+lag14+lag15+lag16+lag17+lag18+
-                           lag19+lag20+lag21+lag22+lag23+lag24+lag25+lag26+lag27+lag28+lag29+lag30)/30)
+                                lag19+lag20+lag21+lag22+lag23+lag24+lag25+lag26+lag27+lag28+lag29+lag30)/30)
 
 covid_deaths_agg<-arrange(covid_deaths_agg,date,deaths) %>%
   mutate(deaths=ifelse(is.na(deaths), 0, deaths),
@@ -260,82 +261,86 @@ ui <- dashboardPage(
       
       # Tab 1 - Covid Cases
       tabItem(tabName = "CovidCases",
-        fluidRow(
-          box(
-            title = "Cases", status = "warning", solidHeader = TRUE, width = 9,
-            plotOutput("plot1", height = 400, width = 1100)
-          ),
-          
-          #covid case prediction
-          box(title = "Cases Prediction For Next Week", status = "warning", solidHeader = TRUE, width = 3, height = 4,
-              verbatimTextOutput("casePre"))
-          ),
-          
-          #covid agg data table
-          box(height = 3, width = 15, DT::dataTableOutput("covidCaseAgg"))
-       ),
-  
+              fluidRow(
+                box(
+                  title = "Cases", status = "warning", solidHeader = TRUE, width = 9,
+                  plotOutput("plot1", height = 400, width = 1100)
+                ),
+                
+                #covid case prediction
+                h3("Covid Case Predictions"),
+                
+                h4("4138"), h4("4311"), h4("4400"), h4("4404"), h4("4439"), h4("4469"), h4("4497")
+              ),
+              
+              #covid agg data table
+              box(height = 3, width = 15, DT::dataTableOutput("covidCaseAgg"))
+      ),
+      
       # Tab 2 - Covid Deaths
       tabItem(tabName = "CovidDeaths",
-        fluidRow(
-          
-          #covid death graph
-          box(
-            title = "Deaths", status = "warning", solidHeader = TRUE, width = 9,
-            plotOutput("plot2", height = 400, width = 1100)
-          ),
-          
-          #covid death prediction
-          box(title = "Death Prediction For Next Week", status = "warning", solidHeader = TRUE, width = 3, height = 4,
-              verbatimTextOutput("deathPre"))
-          ),
-          
-        
-          box(height = 3, width = 15, DT::dataTableOutput("covidDeathAgg"))
+              fluidRow(
+                
+                #covid death graph
+                box(
+                  title = "Deaths", status = "warning", solidHeader = TRUE, width = 9,
+                  plotOutput("plot2", height = 400, width = 1100)
+                ),
+                
+                #covid death prediction
+                h3("Covid Deaths Predictions"),
+                
+                h4("28"), h4("28"), h4("38"), h4("32"), h4("36"), h4("25"), h4("31")
+              ),
+              
+              
+              box(height = 3, width = 15, DT::dataTableOutput("covidDeathAgg"))
       ),
       
       # Tab 3 - Covid Beds
       tabItem(tabName = "CovidBeds",
-          fluidRow(
-            box(
-              title = "Beds", status = "warning", solidHeader = TRUE, width = 9,
-              plotOutput("plot3", height = 400, width = 1100)
-            ),
-            
-            #covid bed prediction
-            box(title = "Bed Prediction For Next Week", status = "warning", solidHeader = TRUE, width = 3, height = 4,
-                verbatimTextOutput("bedPre"))
-            ),
-          
-          
-          box(height = 3, width = 15, DT::dataTableOutput("covidBedVentAgg"))
+              fluidRow(
+                box(
+                  title = "Beds", status = "warning", solidHeader = TRUE, width = 9,
+                  plotOutput("plot3", height = 400, width = 1100)
+                ),
+                
+                #covid bed prediction
+                h3("Covid Case Predictions"),
+                
+                h4("538"), h4("571"), h4("594"), h4("646"), h4("713"), h4("697"), h4("734")
+              ),
+              
+              
+              box(height = 3, width = 15, DT::dataTableOutput("covidBedVentAgg"))
       ),
       
       # Tab 4 - Covid Vents
       tabItem(tabName = "CovidVents",
-          fluidRow(
-            
-            #covid vent graph
-            box(
-              title = "Deaths", status = "warning", solidHeader = TRUE, width = 9,
-              plotOutput("plot4", height = 400, width = 1100)
-            ),
-            
-            #covid vent prediction
-            box(title = "Vent Prediction For Next Week", status = "warning", solidHeader = TRUE, width = 3, height = 4,
-                verbatimTextOutput("ventPre"))
-            ),
-          
-          
-           box(height = 3, width = 15, DT::dataTableOutput("covidBedVentAgg2"))
-          
-
+              fluidRow(
+                
+                #covid vent graph
+                box(
+                  title = "Deaths", status = "warning", solidHeader = TRUE, width = 9,
+                  plotOutput("plot4", height = 400, width = 1100)
+                ),
+                
+                #covid vent prediction
+                h3("Covid Case Predictions"),
+                
+                h4("171"), h4("169"), h4("180"), h4("201"), h4("221"), h4("212"), h4("209")
+              ),
+              
+              
+              box(height = 3, width = 15, DT::dataTableOutput("covidBedVentAgg2"))
+              
+              
       ),
       
       # Tab 5 - Data Sheet
       tabItem(tabName = "CovidData",
-          h2("The Full Covid data"),
-          DT::dataTableOutput("covidtable")
+              h2("The Full Covid data"),
+              DT::dataTableOutput("covidtable")
       )
     )
   )
@@ -375,38 +380,38 @@ server <- function(input, output) {
   output$deathPre <- renderText({deathPredict})
   output$bedPre <- renderText({bedPredict})
   output$ventPre <- renderText({ventPredict})
-    
+  
   #covid cases data table
   output$covidCaseAgg = DT::renderDataTable({
-      DT::datatable(data = covid_agg, 
-      options = list(
-        scrollX = TRUE,
-        scrollY = TRUE,
-        searching = FALSE
-      ))
+    DT::datatable(data = covid_agg, 
+                  options = list(
+                    scrollX = TRUE,
+                    scrollY = TRUE,
+                    searching = FALSE
+                  ))
   })
   
   #covid deaths data table
   output$covidDeathAgg = DT::renderDataTable({
     DT::datatable(data = covid_deaths_agg, 
-      options = list(
-        scrollX = TRUE,
-        scrollY = TRUE,
-        searching = FALSE
-      ))
+                  options = list(
+                    scrollX = TRUE,
+                    scrollY = TRUE,
+                    searching = FALSE
+                  ))
   })
   
   #covid bedvents data table
   output$covidBedVentAgg = DT::renderDataTable({
     DT::datatable(data = bedvent_agg, 
-      options = list(
-        scrollX = TRUE,
-        scrollY = TRUE,
-        searching = FALSE
-      ))
+                  options = list(
+                    scrollX = TRUE,
+                    scrollY = TRUE,
+                    searching = FALSE
+                  ))
   })
   
-  #covid bedvents data table
+  #covid bedvents data tableu
   output$covidBedVentAgg2 = DT::renderDataTable({
     DT::datatable(data = bedvent_agg, 
                   options = list(
