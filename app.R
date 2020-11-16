@@ -237,7 +237,6 @@ bedPredict <- print(max(data_merge$beds[(lastval-6):lastval]))
 ventPredict <- print(max(data_merge$vents[(lastval-6):lastval]))
 
 
-
 ################# R SHINY ##########################################
 
 #create dashboard ui
@@ -271,7 +270,7 @@ ui <- dashboardPage(
                 #covid case prediction
                 h3("Covid Case Predictions"),
                 
-                h4("4138"), h4("4311"), h4("4400"), h4("4404"), h4("4439"), h4("4469"), h4("4497")
+                h4("5665"), h4("5856"), h4("6152"), h4("6244"), h4("6246"), h4("6279"), h4("6353")
               ),
               
               #covid agg data table
@@ -291,7 +290,7 @@ ui <- dashboardPage(
                 #covid death prediction
                 h3("Covid Deaths Predictions"),
                 
-                h4("28"), h4("28"), h4("38"), h4("32"), h4("36"), h4("25"), h4("31")
+                h4("26"), h4("32"), h4("40"), h4("33"), h4("34"), h4("30"), h4("44")
               ),
               
               
@@ -307,9 +306,9 @@ ui <- dashboardPage(
                 ),
                 
                 #covid bed prediction
-                h3("Covid Case Predictions"),
+                h3("Covid Bed Predictions"),
                 
-                h4("538"), h4("571"), h4("594"), h4("646"), h4("713"), h4("697"), h4("734")
+                h4("705"), h4("742"), h4("736"), h4("735"), h4("642"), h4("862"), h4("733")
               ),
               
               
@@ -329,7 +328,7 @@ ui <- dashboardPage(
                 #covid vent prediction
                 h3("Covid Case Predictions"),
                 
-                h4("171"), h4("169"), h4("180"), h4("201"), h4("221"), h4("212"), h4("209")
+                h4("212"), h4("214"), h4("212"), h4("220"), h4("136"), h4("269"), h4("265")
               ),
               
               
@@ -421,6 +420,7 @@ server <- function(input, output) {
                     searching = FALSE
                   ))
   })
+  
   
 }
 
