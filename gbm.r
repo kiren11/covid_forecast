@@ -3,7 +3,7 @@ library(dplyr)
 library(gbm)
 library(plotrix)
 setwd("F:/Grad School/Epidemics/covid_forecast/") 
-today = ymd("2020-11-07") #change this to today's date
+today = ymd("2020-11-14") #change this to today's date
 trees = 3000
 
 #getting data
